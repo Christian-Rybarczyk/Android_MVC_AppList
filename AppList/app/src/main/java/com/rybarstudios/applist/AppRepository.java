@@ -4,16 +4,38 @@ import java.util.ArrayList;
 
 public class AppRepository {
 
-    public static ArrayList<AppListing> getAppListings() {
-        String[] appStrings = APP_DATA.split("\n");
-        String[][] appData = new String[appStrings.length - 1][];
-        ArrayList<AppListing> appListing = new ArrayList<>(500);
+    private static ArrayList<AppListing> dataSet;
 
-        for(int i = 0; i < appStrings.length; i++) {
-           appData[i] = appStrings[i].split(",");
-           //int id, String appName, String appVersion, String domainName, String contactEmail, String imageUrl
+    public static ArrayList<AppListing> getAllApps() {
+        if(dataSet == null) {
+            populateAppData();
         }
-        return appListing;
+        return dataSet;
+    }
+
+    private static void populateAppData() {
+        dataSet = new ArrayList<>(500);
+
+        parseRawData(dataSet, APP_DATA, true);
+    }
+
+    private static void parseRawData(ArrayList<AppListing> dataModels,String data, boolean ignoreFirstLine) {
+        final int startingLine = (ignoreFirstLine) ? 1 : 0;
+
+        final String[]   lines      = APP_DATA.split("\n");
+        final String[][] dataValues = new String[lines.length - startingLine][];
+        String cleanLine;
+        for (int i = startingLine; i < lines.length; ++i) {
+            cleanLine = lines[i].replace("\"", "");
+            dataValues[i - startingLine] = cleanLine.split(",");
+            dataModels.add(new AppListing(
+                    Integer.parseInt(dataValues[i - startingLine][0]),
+                    dataValues[i - startingLine][1],
+                    dataValues[i - startingLine][2],
+                    dataValues[i - startingLine][3],
+                    dataValues[i - startingLine][4],
+                    dataValues[i - startingLine][5]));
+        }
     }
 
     private static final String APP_DATA = "id,app_name,app_version,domain_name,contact_email,image_url\n" +
