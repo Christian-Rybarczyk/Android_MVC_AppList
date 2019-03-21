@@ -31,8 +31,9 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView genTextView(String appName) {
         TextView view = new TextView(context);
-        view.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+        view.setTextSize(TypedValue.COMPLEX_UNIT_SP, 28);
         view.setText(appName);
+        view.setPadding(20, 20, 20, 20);
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
